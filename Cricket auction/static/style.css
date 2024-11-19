@@ -1,0 +1,263 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #f44336;
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+/* Player Card Styling */
+.player {
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+.player:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Bid Amount Styling */
+.bid-amount {
+    margin-right: 10px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+td, th {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #6c757d;
+}
+
+/* List Styling */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Button Styling */
+.team-button, #sell-button, #unsold-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.team-button {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.team-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.team-button:active {
+    transform: scale(0.95);
+}
+
+#sell-button, #unsold-btn   {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+#sell-button:hover, #unsold-btn:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+#sell-button:active, #unsold-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    .player, table {
+        width: 100%;
+    }
+
+    .team-button, #sell-button, #unsold-btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.animated {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #45a049;
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.player-image {
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.player-photo {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.player-photo:hover {
+    transform: scale(1.05);
+}
+
+.player-details {
+    flex-grow: 1;
+}
+#cancel-bid-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+#cancel-bid-btn:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+#cancel-bid-btn:active {
+    transform: scale(0.95);
+}
+
+@media screen and (max-width: 600px) {
+    #cancel-bid-btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+}
+
+.release-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.release-btn:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+.release-btn:active {
+    transform: scale(0.95);
+}
+
+@media screen and (max-width: 600px) {
+    .release-btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+}

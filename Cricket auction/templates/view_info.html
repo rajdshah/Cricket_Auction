@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Team Compositions</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    
+    
+    <!-- Player Information Section -->
+    <div id="player" class="player-info">
+        <h2>Current Player</h2>
+        <p>Name: {{ player.name }}</p>
+        <p>Grade: {{ player.grade }}</p>
+        <p>Base Price: {{ player.base_price }}</p>
+        <p>Final Bid: {{ player.final_bid }}</p>
+        <p>Winning Team: {{ player.winning_team }}</p>
+        {% if player.photo %}
+        <img src="{{ url_for('static', filename='player_images/' + player.photo) }}" alt="Player Photo" width="100">
+        {% endif %}
+    </div>
+    <h1>Final Team Compositions</h1>
+    {% for team_name, team_data in teams.items() %}
+    <div class="team-section">
+        <h2>{{ team_name }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in team_data.players %}
+                <tr>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</body>
+</html>
