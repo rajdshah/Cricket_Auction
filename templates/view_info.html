@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Team Compositions</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    
+    
+    <!-- Player Information Section -->
+    <div id="player">
+        <div class="player-card">
+            <div class="player-image">
+                <img src="{{ url_for('static', filename='player_images/' + player.photo) }}" 
+                     alt="{{ player.name }}" 
+                     class="player-photo">
+            </div>
+            <div class="player-details">
+                <h2 id="player-name">{{ player.name }}</h2>
+                <h3>Grade: {{ player.grade }}</h3>
+                <h3>Role: {{ player.role }}</h3>
+                <p>Base Price: {{ player.base_price }}</p>
+                <p>Final Bid: <span class="final-bid">{{ player.final_bid }}</span></p>
+                <h2>Winning Team: {{ player.winning_team }} {% if player.winning_team %}
+                {% set team_icons = {
+                    'Wicket Strikers': 'Strikers.png',
+                    'Raging Hurricanes': 'Hurricanes.png',
+                    'Orion Stars': 'Stars.png',
+                    'Blazing Thunders': 'Thunders.png',
+                    'Supreme Scorchers': 'Scorchers.png'
+                } %}
+                <img src="{{ url_for('static', filename='images/' + team_icons[player.winning_team]) }}" 
+                    alt="{{ player.winning_team }} icon" 
+                    class="team-icon">
+                {% endif %}</h2>
+            </div>
+        </div>
+        <div class="stats-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Batting</th>
+                        <th>Bowling</th>
+                        <th>Fielding</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Matches: {{ player.Matches }}</p>
+                            <p>Runs: {{ player.Innings_Bat }}</p>
+                            <p>Average: {{ player.Runs_Scored }}</p>
+                            <p>Thirties: {{ player.Thirties }}</p>
+                            <p>Highest Score: {{ player.High_Score }}</p>
+                            <p>Average: {{ player.BatAvg}}</p>
+                        </td>
+                        <td>
+                            <p>Wickets: {{ player.Wickets_Taken }}</p>
+                            <p>Maidens: {{ player.Maidens }}</p>
+                            <p>Runs Given: {{ player.Runs_Given }}</p>
+                            <p>Best Bowl Figure: {{ player.BestBowlFig }}</p>
+                            <p>Economy: {{ player.Economy }}</p>
+                        </td>
+                        <td>
+                            <p>Catches: {{ player.Catches }}</p>
+                            <p>Runout: {{ player.RunOut }}</p>
+                            <p>Stumpings: {{ player.Stumping}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <style>
+
+            .team-icon {
+                width: 150px;
+                height: 150px;
+                vertical-align: middle;
+                margin-left: 8px;
+                object-fit: contain;
+            }
+        
+            .stats-table table {
+                border-collapse: collapse;
+                width: 100%;
+                margin-top: 20px;
+            }
+        
+            .stats-table th, .stats-table td {
+                border: 3px solid #ddd;
+                padding: 15px;
+                text-align: center;
+            }
+        
+            .stats-table th {
+                background-color: #f4f4f4;
+                font-weight: bold;
+            }
+        
+            .stats-table td p {
+                margin: 5px 0;
+            }
+        
+            @media (max-width: 768px) {
+                .container {
+                    flex-direction: column;
+                }
+            }
+        </style>
+    </div>
+    <h1>Final Team Compositions</h1>
+    {% for team_name, team_data in teams.items() %}
+    <div class="team-section">
+        <h2>
+            {{ team_name }}
+            {% set team_icons = {
+                'Wicket Strikers': 'Strikers.png',
+                'Raging Hurricanes': 'Hurricanes.png',
+                'Orion Stars': 'Stars.png',
+                'Blazing Thunders': 'Thunders.png',
+                'Supreme Scorchers': 'Scorchers.png'
+            } %}
+            <img src="{{ url_for('static', filename='images/' + team_icons[team_name]) }}" 
+                 alt="{{ team_name }} icon" 
+                 class="team-icon">
+        </h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in team_data.players %}
+                <tr>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+
+    <script>
+// Auto refresh the view info page every second
+setInterval(function() {
+    window.location.reload();
+}, 2500); // 1000ms = 1 second
+</script>
+</body>
+</html>

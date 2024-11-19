@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Final Team Compositions</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Final Team Compositions</h1>
+    {% for team_name, team_data in teams.items() %}
+    <div class="team-section">
+        <h2>{{ team_name }}</h2>
+        <p>Remaining Budget: {{ team_data.budget }}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                    <th>Grade</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in team_data.players %}
+                <tr>
+                    <td>{{ player.name }}</td>
+                    <td>{{ player.grade }}</td>
+                    <td>{{ player.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</body>
+</html>
