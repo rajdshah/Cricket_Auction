@@ -3,46 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Final Team Compositions</title>
+    <title>Auction</title>
+    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="/static/style.css">
+    <!-- jQuery for AJAX requests -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+    
+    <h1>Auction</h1>
 
-    
-    
-    <!-- Player Information Section -->
-    <div id="player" class="player-info">
-        <h2>Current Player</h2>
-        <p>Name: {{ player.name }}</p>
-        <p>Grade: {{ player.grade }}</p>
-        <p>Base Price: {{ player.base_price }}</p>
-        <p>Final Bid: {{ player.final_bid }}</p>
-        <p>Winning Team: {{ player.winning_team }}</p>
-        {% if player.photo %}
-        <img src="{{ url_for('static', filename='player_images/' + player.photo) }}" alt="Player Photo" width="100">
-        {% endif %}
+        <!-- Player Information -->
+        <!-- <div id="player">
+            <h2 id="player-name">{{ player.name }}</h2>
+            <h3>Grade: {{ player.grade }}</h3>
+            <h3>Role: {{ player.role }}</h3>
+            <p>Base Price: {{ player.base_price }}</p>
+            <p>Final Bid: <span class="final-bid">{{ player.final_bid }}</span></p>
+            <p>Winning Team: <span class="winning-team">{{ player.winning_team }}</span></p> -->
+        
+            <div id="player">
+                <div class="player-card">
+                    <div class="player-image">
+                        <img src="{{ url_for('static', filename='player_images/' + player.photo) }}" 
+                             alt="{{ player.name }}" 
+                             class="player-photo">
+                    </div>
+                    <div class="player-details">
+                        <h2 id="player-name">{{ player.name }}</h2>
+                        <h3>Grade: {{ player.grade }}</h3>
+                        <h3>Role: {{ player.role }}</h3>
+                        <p>Base Price: {{ player.base_price }}</p>
+                        <p>Final Bid: <span class="final-bid">{{ player.final_bid }}</span></p>
+                        <p>Winning Team: <span class="winning-team">{{ player.winning_team }}</span></p>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Buttons for bidding by teams -->
+        <div id="team-buttons">
+            <button class="team-button" data-team="Team A">Team A</button>
+            <button class="team-button" data-team="Team B">Team B</button>
+            <button class="team-button" data-team="Team C">Team C</button>
+            <button class="team-button" data-team="Team D">Team D</button>
+            <button class="team-button" data-team="Team E">Team E</button>
+        </div>
+
+        <!-- Sell and Unsold Buttons -->
+        <button id="sell-button">Sell Player</button>
+        <button id="unsold-btn" onclick="markUnsold()">Unsold</button>
+        <button id="cancel-bid-btn" onclick="cancelBid()">Cancel Bid</button>
     </div>
-    <h1>Final Team Compositions</h1>
-    {% for team_name, team_data in teams.items() %}
+
+    <!-- Teams Information -->
+    <h2>Teams</h2>
+    {% for team_name, team in teams.items() %}
     <div class="team-section">
-        <h2>{{ team_name }}</h2>
-        <table>
+        <h3>{{ team_name }}</h3>
+        <p>Budget Remaining: {{ team.budget }}</p>
+        <table class="table">
             <thead>
                 <tr>
                     <th>Player Name</th>
+                    <th>Grade</th>
                     <th>Price</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                {% for player in team_data.players %}
+                {% for player in team.players %}
                 <tr>
                     <td>{{ player.name }}</td>
+                    <td>{{ player.grade }}</td>
                     <td>{{ player.price }}</td>
+                    <td>
+                        <button class="btn btn-danger release-btn" 
+                                data-team="{{ team_name }}" 
+                                data-player="{{ player.name }}">
+                            Release
+                        </button>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    {% endfor %}
+{% endfor %}
+
+    <!-- JavaScript for handling auction actions -->
+    <script type="text/javascript">
+        // Auto refresh the auction page every second without any conditions
+setInterval(function() {
+    window.location.reload();
+}, 5000); // 1000ms = 1 second
+
+        document.querySelectorAll('.release-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const teamName = this.dataset.team;
+                const playerName = this.dataset.player;
+                
+                if (confirm(`Are you sure you want to release ${playerName} from ${teamName}?`)) {
+                    fetch('/release_player', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            team_name: teamName,
+                            player_name: playerName
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload(); // Refresh the page to show updated team
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    });
+                }
+            });
+        });
+        $(document).ready(function() {
+            // Handle bid placement
+            $('.team-button').click(function() {
+                var teamName = $(this).data('team');
+
+                $.ajax({
+                    url: '/bid',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ team_name: teamName }),
+                    success: function(response) {
+                        if (response.success) {
+                            // Update final bid and winning team in the UI
+                            $('.final-bid').text(response.player.final_bid);
+                            $('.winning-team').text(response.player.winning_team);
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            });
+
+            // Handle selling a player
+            $('#sell-button').click(function() {
+                var currentTeam = $('.winning-team').text();
+
+                $.ajax({
+                    url: '/sell_player',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ team_name: currentTeam }),
+                    success: function(response) {
+                        if (response.success) {
+                            // Update the UI with the next player
+                            $('#player-name').text(response.player.name);
+                            $('.final-bid').text(response.player.final_bid);
+                            $('.winning-team').text(response.player.winning_team);
+
+                            // Update team's budget and add sold player to the list
+                            $('#' + currentTeam + ' .budget').text(response.team_data.budget);
+                            var playersList = $('#' + currentTeam + ' .players');
+                            playersList.append('<li>' + response.sold_player.name + ' - ' + response.sold_player.final_bid + '</li>');
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            });
+        });
+
+        // Function to mark a player as unsold
+        function markUnsold() {
+            fetch('/mark_unsold', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Player marked as unsold and moved to the end.');
+                    location.reload();  // Reload page to show next player
+                } else {
+                    alert(data.message || 'No more players to auction!');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+
+        }
+        
+        
+        function cancelBid() {
+            fetch('/cancel_bid', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();  // Reload page to show next player
+                } else {
+                    alert(data.message || 'No more bids to cancel!');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+    </script>
+
 </body>
 </html>
