@@ -48,6 +48,20 @@
             <button class="team-button" data-team="Blazing Thunders">Blazing Thunders</button>
             <button class="team-button" data-team="Supreme Scorchers"> Supreme Scorchers</button>
         </div>
+        <div class="bid-controls">
+            <input type="number" id="manual-bid" placeholder="Enter bid amount">
+            <select id="team-select">
+                <option value="">Select Team</option>
+                <option value="Wicket Strikers">Wicket Strikers</option>
+                <option value="Raging Hurricanes">Raging Hurricanes</option>
+                <option value="Orion Stars">Orion Stars</option>
+                <option value="Blazing Thunders">Blazing Thunders</option>
+                <option value="Supreme Scorchers">Supreme Scorchers</option>
+            </select>
+            <button onclick="submitManualBid()">Submit Bid</button>
+        </div>
+        
+        
 
         <!-- Sell and Unsold Buttons -->
         <button id="sell-button">Sell Player</button>
@@ -95,7 +109,7 @@
         // Auto refresh the auction page every second without any conditions
 setInterval(function() {
     window.location.reload();
-}, 2500); // 1000ms = 1 second
+}, 10000); // 1000ms = 1 second
 
         document.querySelectorAll('.release-btn').forEach(button => {
             button.addEventListener('click', function() {
@@ -215,6 +229,43 @@ setInterval(function() {
             })
             .catch(error => console.error('Error:', error));
         }
+        function submitManualBid() {
+            const bidAmount = parseInt(document.getElementById('manual-bid').value);
+            const teamName = document.getElementById('team-select').value;
+            
+            if (!teamName) {
+                alert('Please select a team');
+                return;
+            }
+            
+            fetch('/manual_bid', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    team_name: teamName,
+                    bid_amount: bidAmount
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateBidDisplay(data.player);
+                    document.getElementById('manual-bid').value = '';
+                    document.getElementById('team-select').value = '';
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+
+        function updateBidDisplay(player) {
+            document.getElementById('current-bid').textContent = player.final_bid;
+            document.getElementById('winning-team').textContent = player.winning_team || 'None';
+        }
+
+
 
     </script>
 
