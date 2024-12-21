@@ -391,6 +391,36 @@ def view_info():
                          teams=teams)
 
 
+@app.route('/manual_bid', methods=['POST'])
+def manual_bid():
+    global current_player_index
+    data = request.json
+    team_name = data['team_name']
+    bid_amount = data['bid_amount']
+    player = players[current_player_index]
+
+    if teams[team_name]["grade_count"][player['grade']] >= 2:
+        return jsonify(success=False, message=f"Team already has 2 players of grade {player['grade']}!")
+
+    if bid_amount < player['base_price']:
+        return jsonify(success=False, message=f"Bid must be at least {player['base_price']}!")
+        
+    if player['final_bid'] > 0 and bid_amount <= player['final_bid']:
+        return jsonify(success=False, message="Bid must be higher than current bid!")
+        
+    if bid_amount > teams[team_name]["budget"]:
+        return jsonify(success=False, message="Insufficient team budget!")
+
+    if player['winning_team']:
+        player['bid_history'].append({
+            'team': player['winning_team'],
+            'amount': player['final_bid']
+        })
+
+    player['final_bid'] = bid_amount
+    player['winning_team'] = team_name
+    
+    return jsonify(success=True, player=player)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8000))
